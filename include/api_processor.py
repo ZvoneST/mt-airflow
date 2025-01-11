@@ -25,12 +25,12 @@ class APIProcessor:
 
     @staticmethod
     def parse_wkt_coordinates(wkt):
-        match = re.match(r"POINT\s*\(\s*([-\d.]+)\s+([-\d.]+)\s*\)", wkt)
+        match = re.match(r'POINT\s*\(\s*([-\d.]+)\s+([-\d.]+)\s*\)', wkt)
         if match:
             lon, lat = float(match.group(1)), float(match.group(2))
             return lon, lat
         else:
-            raise ValueError(f"Invalid WKT format: {wkt}")
+            raise ValueError(f'Invalid WKT format: {wkt}')
 
     def store_raw_data(self, field_id, requested_data):
         try:
@@ -48,14 +48,14 @@ class APIProcessor:
             for field_id, wkt in field_data:
                 try:
                     lon, lat = self.parse_wkt_coordinates(wkt=wkt)
-                    logger.info(f"Processing field_id {field_id} with coordinates ({lon}, {lat})...")
+                    logger.info(f'Processing field_id {field_id} with coordinates ({lon}, {lat})...')
 
                     requested_data = self.request_method(lon, lat)
 
                     self.store_raw_data(field_id=field_id, requested_data=requested_data)
-                    logger.info(f"Successfully processed field_id {field_id}.")
+                    logger.info(f'Successfully processed field_id {field_id}.')
                 except Exception as e:
-                    logger.error(f"Failed to process field_id {field_id}: {e}")
+                    logger.error(f'Failed to process field_id {field_id}: {e}')
         finally:
             self.source_conn.close()
             self.target_conn.close()
