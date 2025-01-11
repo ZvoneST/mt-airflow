@@ -4,7 +4,7 @@ import psycopg2
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from include.api_processor import APIProcessor
-from include.request_methods import send_soilgrids_request
+from include.request_methods import soilgrids_request
 
 from datetime import datetime, timedelta
 from airflow.models import DAG
@@ -49,21 +49,31 @@ update_query = '''
     WHERE soil_grid_imported = false
 '''
 
+transfer_query = '''
+    INSERT INTO raw.soil_data (field_id, soil_grid_data)
+    SELECT field_id, soil_grid_data
+    FROM landing.soil_data AS source_data
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM raw.soil_data dest
+        WHERE dest.field_id = source_data.field_id
+    );
+'''
+
 api_processor = APIProcessor(source_conn=conn_fm, target_conn=conn_landing,
                              fetch_query=field_query, insert_query=insert_query,
-                             request_method=send_soilgrids_request)
+                             request_method=soilgrids_request)
 
 default_args = {
     'owner': 'admin',
-    'start_date': datetime(2025, 1, 10),
+    'start_date': datetime(2025, 1, 1),
     'retries': 1,
 }
 
 with DAG(
     dag_id='soil_grid_raw',
     default_args=default_args,
-    schedule=timedelta(days=1),
-    start_date=datetime(2025, 1, 10, 4, 0),
+    schedule='0 2 * * *',
     catchup=False
 ) as dag:
     
@@ -84,4 +94,11 @@ with DAG(
         sql=update_query
     )
     
-    soilgrid_api_active >> get_store_soil_grids >> update_source_data
+    transfer_soil_data = SQLExecuteQueryOperator(
+        task_id='transfer_soil_data',
+        conn_id='exploration_zone_conn',
+        sql=transfer_query
+    )
+    
+    soilgrid_api_active >> get_store_soil_grids >> \
+    update_source_data >> transfer_soil_data
