@@ -24,8 +24,7 @@ with DAG(
     default_args=default_args,
     schedule=timedelta(days=1),
     start_date=datetime(2025, 1, 10, 3, 0),
-    catchup=False,
-    template_searchpath=['opt/airflow/include']
+    catchup=False
 ) as dag:
 
     agent_types = SQLExecuteQueryOperator(
@@ -106,9 +105,9 @@ with DAG(
         sql=queries.field_tasks
     )
     
-    [agent_types >> agents >> agro_organizations >> \
-    agrotehnical_operation_groups >> agrotehnical_operations >> \
-    crops >> varieties >> measurement_units >> meteo_locations >> \
-    production_types >> seasons >> fields] >> field_tasks
+    (agent_types >> agents >> agro_organizations >> \
+    agrotehnical_operation_groups >> agrotehnical_operations) >> \
+    (crops >> varieties >> measurement_units >> meteo_locations >> \
+    production_types >> seasons) >> fields >> field_tasks
     
     
