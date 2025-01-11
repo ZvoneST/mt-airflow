@@ -299,7 +299,3 @@ def transfer_queries(user: str, password: str):
         field_tasks: str = fm_field_tasks
         
     return TransferQueries()
-
-
-# queries = transfer_queries()
-
