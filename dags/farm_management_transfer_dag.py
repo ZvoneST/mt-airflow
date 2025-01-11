@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 conn = BaseHook.get_connection('exploration_zone_conn')
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'admin',
     'start_date': datetime(2025, 1, 10),
     'retries': 1,
 }
