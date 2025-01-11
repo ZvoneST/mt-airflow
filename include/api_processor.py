@@ -11,14 +11,20 @@ logger = logging.getLogger(__name__)
 
 
 class APIProcessor:
-    def __init__(self, source_conn, target_conn, fetch_query, insert_query, request_method):
+    def __init__(self, source_conn, 
+                 target_conn, 
+                 fetch_query, 
+                 insert_query, 
+                 request_method,
+                 api_key = None):
         self.source_conn = source_conn
         self.target_conn = target_conn
         self.fetch_query = fetch_query
         self.insert_query = insert_query
         self.request_method = request_method
+        self.api_key = api_key
 
-    def fetch_field_ids(self):
+    def fetch_ids(self):
         with self.source_conn.cursor() as cursor:
             cursor.execute(self.fetch_query)
             return cursor.fetchall()
@@ -32,10 +38,10 @@ class APIProcessor:
         else:
             raise ValueError(f'Invalid WKT format: {wkt}')
 
-    def store_raw_data(self, field_id, requested_data):
+    def store_raw_data(self, id, requested_data):
         try:
             with self.target_conn.cursor() as cursor:
-                cursor.execute(self.insert_query, (field_id, json.dumps(requested_data)))
+                cursor.execute(self.insert_query, (id, json.dumps(requested_data)))
                 self.target_conn.commit()
         except Exception as e:
             self.target_conn.rollback()
@@ -43,19 +49,21 @@ class APIProcessor:
 
     def process_data(self):
         try:
-            field_data = self.fetch_field_ids()
+            data = self.fetch_ids()
 
-            for field_id, wkt in field_data:
+            for id, wkt in data:
                 try:
                     lon, lat = self.parse_wkt_coordinates(wkt=wkt)
-                    logger.info(f'Processing field_id {field_id} with coordinates ({lon}, {lat})...')
+                    logger.info(f'Processing id {id} with coordinates ({lon}, {lat})...')
+                    if self.api_key is not None:
+                        requested_data = self.request_method(lon, lat, self.api_key)
+                    else:
+                        requested_data = self.request_method(lon, lat)
 
-                    requested_data = self.request_method(lon, lat)
-
-                    self.store_raw_data(field_id=field_id, requested_data=requested_data)
-                    logger.info(f'Successfully processed field_id {field_id}.')
+                    self.store_raw_data(id=id, requested_data=requested_data)
+                    logger.info(f'Successfully processed id {id}.')
                 except Exception as e:
-                    logger.error(f'Failed to process field_id {field_id}: {e}')
+                    logger.error(f'Failed to process id {id}: {e}')
         finally:
             self.source_conn.close()
             self.target_conn.close()
