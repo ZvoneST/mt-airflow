@@ -13,7 +13,7 @@ conn = BaseHook.get_connection('exploration_zone_conn')
 
 default_args = {
     'owner': 'admin',
-    'start_date': datetime(2025, 1, 10),
+    'start_date': datetime(2025, 1, 1),
     'retries': 1,
 }
 
@@ -22,8 +22,7 @@ queries = transfer_queries(user=conn.login, password=conn.password)
 with DAG(
     dag_id='farm_management_transfer',
     default_args=default_args,
-    schedule=timedelta(days=1),
-    start_date=datetime(2025, 1, 10, 3, 0),
+    schedule='0 1 * * *',
     catchup=False
 ) as dag:
 
