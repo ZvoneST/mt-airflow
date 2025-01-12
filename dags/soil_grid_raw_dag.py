@@ -5,8 +5,9 @@ import psycopg2
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from include.api_processor import APIProcessor
 from include.request_methods import soilgrids_request
+from include.structured_raw_soil_grid_query import structured_raw_soil_grid_query
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from airflow.models import DAG
 from airflow.hooks.base import BaseHook
 from airflow.providers.http.sensors.http import HttpSensor
@@ -94,4 +95,11 @@ with DAG(
         sql=update_query
     )
     
-    soilgrid_api_active >> get_store_soil_grids >> update_source_data
+    structured_raw_soil_data = SQLExecuteQueryOperator(
+        task_id='structured_raw_soil_data',
+        conn_id='raw_zone_conn',
+        sql=structured_raw_soil_grid_query
+    )
+    
+    soilgrid_api_active >> get_store_soil_grids >> update_source_data >> \
+        structured_raw_soil_data
