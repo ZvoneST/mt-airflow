@@ -94,11 +94,4 @@ with DAG(
         sql=update_query
     )
     
-    transfer_soil_data = SQLExecuteQueryOperator(
-        task_id='transfer_soil_data',
-        conn_id='exploration_zone_conn',
-        sql=transfer_query
-    )
-    
-    soilgrid_api_active >> get_store_soil_grids >> \
-    update_source_data >> transfer_soil_data
+    soilgrid_api_active >> get_store_soil_grids >> update_source_data
