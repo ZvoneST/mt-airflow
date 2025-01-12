@@ -43,4 +43,30 @@ def meteo_data_request(lon, lat, key, days=1):
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}")
         raise
-    
+
+ 
+def agro_meteo_data_request(lon, lat, key, days=1):
+    try:
+        url = 'https://api.stormglass.io/v2/bio/point'
+        end = datetime.now().date()
+        start = end - timedelta(days=days)
+        
+        headers = {
+            'Authorization': key
+        }
+        parameters = {
+            'lat': lat,
+            'lng': lon,
+            'params': 'soilMoisture,soilMoisture10cm,soilTemperature,soilTemperature10cm',
+            'start': start.isoformat(),
+            'end': end.isoformat(),
+            'source': 'sg'
+        }
+        
+        response = requests.get(url, params=parameters, headers=headers)
+        response.raise_for_status()
+        return response.json()
+
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        raise
