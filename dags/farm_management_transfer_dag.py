@@ -7,7 +7,7 @@ from include.farm_management_transfer_queries import transfer_queries
 from airflow import DAG
 from airflow.hooks.base import BaseHook
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
-from datetime import datetime, timedelta
+from datetime import datetime
 
 conn = BaseHook.get_connection('exploration_zone_conn')
 
