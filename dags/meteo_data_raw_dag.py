@@ -10,7 +10,6 @@ from datetime import datetime
 from airflow.models import DAG
 from airflow.hooks.base import BaseHook
 from airflow.providers.http.sensors.http import HttpSensor
-from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.operators.python import PythonOperator
 
 source_conn = BaseHook.get_connection('farm_management_conn')
@@ -70,6 +69,5 @@ with DAG(
         task_id='get_store_meteo_data',
         python_callable=api_processor.process_data
     )
-    
     
     meteo_api_active >> get_store_meteo_data
