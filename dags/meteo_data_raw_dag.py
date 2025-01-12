@@ -55,7 +55,7 @@ default_args = {
 with DAG(
     dag_id='meteo_data_raw',
     default_args=default_args,
-    schedule='0 3 * * *',
+    schedule='30 1 * * *',
     catchup=False
 ) as dag:
     

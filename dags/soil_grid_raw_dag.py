@@ -73,7 +73,7 @@ default_args = {
 with DAG(
     dag_id='soil_grid_raw',
     default_args=default_args,
-    schedule='0 2 * * *',
+    schedule='15 1 * * *',
     catchup=False
 ) as dag:
     
