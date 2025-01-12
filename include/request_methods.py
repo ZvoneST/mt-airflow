@@ -11,7 +11,7 @@ def soilgrids_request(lon, lat):
             'bdod', 'cec', 'clay', 'nitrogen', 'phh2o', 'sand', 'silt', 'soc'
         ],
         'depth': ['0-5cm', '0-15cm', '15-30cm'],
-        'value': ['mean', 'uncertainty']
+        'value': ['mean']
     }
     response = requests.get(url, params=parameters)
     response.raise_for_status()
