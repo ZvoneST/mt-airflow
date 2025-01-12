@@ -1,13 +1,12 @@
 import sys
 import os
-import json
 import psycopg2
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from include.api_processor import APIProcessor
 from include.request_methods import meteo_data_request
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from airflow.models import DAG
 from airflow.hooks.base import BaseHook
 from airflow.providers.http.sensors.http import HttpSensor
