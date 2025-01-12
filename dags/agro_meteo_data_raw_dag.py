@@ -4,7 +4,7 @@ import psycopg2
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from include.api_processor import APIProcessor
-from include.request_methods import meteo_data_request
+from include.request_methods import agro_meteo_data_request
 
 from datetime import datetime
 from airflow.models import DAG
@@ -44,7 +44,7 @@ insert_query = '''
 
 api_processor = APIProcessor(source_conn=conn_fm, target_conn=conn_landing,
                              fetch_query=meteo_query, insert_query=insert_query,
-                             request_method=meteo_data_request, api_key=api_conn.login)
+                             request_method=agro_meteo_data_request, api_key=api_conn.login)
 
 default_args = {
     'owner': 'admin',
