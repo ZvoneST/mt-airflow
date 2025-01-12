@@ -20,7 +20,7 @@ queries = transfer_landing_raw_queries()
 with DAG(
     dag_id='landing_raw_transfer',
     default_args=default_args,
-    schedule='0 2 * * *',
+    schedule='0 8 * * *',
     catchup=False
 ) as dag:
 
