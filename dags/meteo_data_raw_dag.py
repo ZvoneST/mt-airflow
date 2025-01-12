@@ -42,8 +42,6 @@ meteo_query = '''
 insert_query = '''
     INSERT INTO landing.meteo_data (meteo_location_id, meteo_data)
     VALUES (%s, %s)
-    ON CONFLICT (meteo_location_id) DO UPDATE
-    SET meteo_data = EXCLUDED.meteo_data;
 '''
 
 api_processor = APIProcessor(source_conn=conn_fm, target_conn=conn_landing,
@@ -63,12 +61,11 @@ with DAG(
     catchup=False
 ) as dag:
     
-    # meteo_api_active = HttpSensor(
-    #     task_id='meteo_api_active',
-    #     http_conn_id='meteo_data_conn',
-    #     endpoint='/v2/weather',
-    #     headers=api_conn.login
-    # )
+    meteo_api_active = HttpSensor(
+        task_id='meteo_api_active',
+        http_conn_id='meteo_data_conn',
+        endpoint='api/',
+    )
     
     get_store_meteo_data = PythonOperator(
         task_id='get_store_meteo_data',
@@ -76,4 +73,4 @@ with DAG(
     )
     
     
-    get_store_meteo_data
+    meteo_api_active >> get_store_meteo_data
