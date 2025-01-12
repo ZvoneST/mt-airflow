@@ -16,7 +16,7 @@ def transfer_landing_raw_queries():
         SELECT l.meteo_landing_id, l.meteo_location_id, l.meteo_data
         FROM landing.meteo_data l 
         LEFT JOIN raw.meteo_data r 
-        ON l.meteo_landing_id = r.meteo_landing_id
+        ON l.meteo_landing_id = r.meteo_landing_id AND l.meteo_location_id = r.meteo_location_id
         WHERE r.meteo_landing_id IS NULL;
     '''
 
@@ -25,7 +25,7 @@ def transfer_landing_raw_queries():
         SELECT l.meteo_landing_id, l.meteo_location_id, l.agro_meteo_data
         FROM landing.agro_meteo_data l 
         LEFT JOIN raw.agro_meteo_data r 
-        ON l.meteo_landing_id = r.meteo_landing_id
+        ON l.meteo_landing_id = r.meteo_landing_id AND l.meteo_location_id = r.meteo_location_id
         WHERE r.meteo_landing_id IS NULL;
     '''
     
