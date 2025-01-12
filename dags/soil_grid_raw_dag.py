@@ -75,7 +75,7 @@ with DAG(
     dag_id='soil_grid_raw',
     default_args=default_args,
     schedule='15 1 * * *',
-    catchup=False
+    catchup=True
 ) as dag:
     
     soilgrid_api_active = HttpSensor(

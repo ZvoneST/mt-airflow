@@ -56,7 +56,7 @@ with DAG(
     dag_id='agro_meteo_data_raw',
     default_args=default_args,
     schedule='45 1 * * *',
-    catchup=False
+    catchup=True
 ) as dag:
     
     agro_meteo_api_active = HttpSensor(

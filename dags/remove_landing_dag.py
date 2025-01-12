@@ -22,7 +22,7 @@ with DAG(
     dag_id='remove_landing',
     default_args=default_args,
     schedule='0 20 * * *',
-    catchup=False
+    catchup=True
 ) as dag:
 
     remove_soil_data = SQLExecuteQueryOperator(

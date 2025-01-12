@@ -23,7 +23,7 @@ with DAG(
     dag_id='farm_management_transfer',
     default_args=default_args,
     schedule='0 1 * * *',
-    catchup=False
+    catchup=True
 ) as dag:
 
     agent_types = SQLExecuteQueryOperator(
