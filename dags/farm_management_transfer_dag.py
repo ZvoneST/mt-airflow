@@ -2,7 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from include.farm_management_transfer_queries import transfer_queries
+from include.farm_management_transfer_queries import farm_management_transfers
 
 from airflow import DAG
 from airflow.hooks.base import BaseHook
@@ -17,7 +17,7 @@ default_args = {
     'retries': 1,
 }
 
-queries = transfer_queries(user=conn.login, password=conn.password)
+queries = farm_management_transfers(user=conn.login, password=conn.password)
 
 with DAG(
     dag_id='farm_management_transfer',
