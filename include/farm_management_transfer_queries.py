@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-def transfer_queries(user: str, password: str):
+def farm_management_transfers(user: str, password: str):
     
     fm_agent_types = f'''
     INSERT INTO farm_management.agent_types (agent_type_id, agent_type_name)
@@ -283,7 +283,7 @@ def transfer_queries(user: str, password: str):
     '''
     
     @dataclass
-    class TransferQueries:
+    class FarmManagementTransfer:
         agent_types: str = fm_agent_types
         agents: str = fm_agents
         agro_organizations: str = fm_agro_organizations
@@ -298,4 +298,4 @@ def transfer_queries(user: str, password: str):
         fields: str = fm_fields
         field_tasks: str = fm_field_tasks
         
-    return TransferQueries()
+    return FarmManagementTransfer()
