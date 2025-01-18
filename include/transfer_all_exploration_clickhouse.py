@@ -89,6 +89,9 @@ class CKHSTransferAllData:
         except Exception as e:
             logger.error('Error reading data from Postgres:', exc_info=True)
             return None
+        finally:
+            if 'connection' in locals() and self.pg_conn:
+                self.pg_conn.close()
 
     def _load_data_to_clickhouse(self, df: pd.DataFrame, database: str, table: str):
         try:
