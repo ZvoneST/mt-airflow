@@ -215,15 +215,3 @@ class CallableCKHSTransferAllData():
             dest_database=self.database,
             dest_table=self.stg_tables.soil_data
         )
-
-
-
-
-
-
-
-
-
-
-    
-    
