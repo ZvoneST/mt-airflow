@@ -94,10 +94,4 @@ with DAG(
         sql=update_query
     )
     
-    # structured_raw_soil_data = SQLExecuteQueryOperator(
-    #     task_id='structured_raw_soil_data',
-    #     conn_id='raw_zone_conn',
-    #     sql=structured_raw_soil_grid_query
-    # )
-    
     soilgrid_api_active >> get_store_soil_grids >> update_source_data
