@@ -2,7 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from include.farm_management_transfer_queries import farm_management_transfers
+from include.transfer_farm_management_queries import farm_management_transfers
 
 from airflow import DAG
 from airflow.hooks.base import BaseHook
@@ -20,7 +20,7 @@ default_args = {
 queries = farm_management_transfers(user=conn.login, password=conn.password)
 
 with DAG(
-    dag_id='farm_management_transfer',
+    dag_id='transfer_farm_management',
     default_args=default_args,
     schedule='0 1 * * *',
     catchup=True
