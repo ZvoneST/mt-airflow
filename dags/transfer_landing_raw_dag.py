@@ -2,7 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from include.landing_raw_transfer_queries import transfer_landing_raw_queries
+from include.transfer_landing_raw_queries import transfer_landing_raw_queries
 
 from airflow import DAG
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
@@ -18,7 +18,7 @@ default_args = {
 queries = transfer_landing_raw_queries()
 
 with DAG(
-    dag_id='landing_raw_transfer',
+    dag_id='transfer_landing_raw',
     default_args=default_args,
     schedule='0 8 * * *',
     catchup=True
