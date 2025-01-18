@@ -59,7 +59,7 @@ class CKHSTransferIncrementData:
             logger.info(f'Latest `created_on` in ClickHouse: {latest_date}')
             return latest_date
         except Exception as e:
-            logger.error('Error fetching latest `created_on` from ClickHouse:', e)
+            logger.error('Error fetching latest `created_on` from ClickHouse:', exc_info=True)
             return None
         
     def _fetch_data_from_postgres(self, latest_date, table: str):
@@ -67,18 +67,19 @@ class CKHSTransferIncrementData:
             engine = create_engine(self.pg_conn)
             
             if table == 'field_tasks':
-                query = select_field_tasks_query(filter_date=latest_date)
+                source_query = select_field_tasks_query(filter_date=latest_date)
             elif table == 'meteo_data':
-                query = select_meteo_data_query(filter_date=latest_date)
+                source_query = select_meteo_data_query(filter_date=latest_date)
             else:
-                query = select_agro_meteo_data_query(filter_date=latest_date)
+                source_query = select_agro_meteo_data_query(filter_date=latest_date)
                 
-            df = pd.read_sql_query(query, engine)
+            with engine.connect() as connection:
+                df = pd.read_sql(source_query, connection)
             
             logger.info(f'Fetched {len(df)} rows from PostgreSQL.')
             return df
         except Exception as e:
-            logger.error('Error fetching data from PostgreSQL:', e)
+            logger.error('Error fetching data from PostgreSQL:', exc_info=True)
             return None
         
     def _insert_data_to_clickhouse(self, df: pd.DataFrame):
@@ -89,7 +90,7 @@ class CKHSTransferIncrementData:
             client.insert('field_tasks', data, column_names=column_names)
             logger.info(f'{len(data)} rows inserted into ClickHouse.')
         except Exception as e:
-            logger.error('Error inserting data into ClickHouse:', e)
+            logger.error('Error inserting data into ClickHouse:', exc_info=True)
     
     def transfer_field_tasks(self, database: str, table: str):
         latest_date = self._fetch_latest_created_on(database=database, table=table)
@@ -103,6 +104,8 @@ class CKHSTransferIncrementData:
             self._insert_data_to_clickhouse(df)
         else:
             logger.warning('No new data to insert.')
+        if 'connection' in locals() and self.pg_conn:
+            self.pg_conn.close()
         
     
     
