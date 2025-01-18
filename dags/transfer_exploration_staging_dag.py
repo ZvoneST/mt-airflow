@@ -8,7 +8,7 @@ from airflow.hooks.base import BaseHook
 from airflow.operators.python import PythonOperator
 from include.transfer_all_exploration_clickhouse import postgres_conn, clickhouse_conn_config, \
     CallableCKHSTransferAllData
-from include.transfer_increment_exploration_clickhouse import CKHSTransferIncrementData
+from include.transfer_increment_exploration_clickhouse import CallableCKHSTransferIncrementData
 from datetime import datetime
 
 default_args = {
@@ -33,6 +33,8 @@ ckhs_config = clickhouse_conn_config(user=target_conn.login,
                                      database=target_conn.schema)
 
 transfer_all_process = CallableCKHSTransferAllData(pg_conn=pg_conn, ckhs_config=ckhs_config)
+
+transfer_increment_process = CallableCKHSTransferIncrementData(pg_conn=pg_conn, ckhs_config=ckhs_config)
 
 with DAG(
     dag_id='transfer_exploration_staging',
@@ -106,10 +108,28 @@ with DAG(
         python_callable=transfer_all_process.transfer_soil_data
     )
     
+    staging_field_tasks = PythonOperator(
+        task_id='staging_field_tasks',
+        python_callable=transfer_increment_process.transfer_field_tasks
+    )
+    
+    staging_meteo_data = PythonOperator(
+        task_id='staging_meteo_data',
+        python_callable=transfer_increment_process.transfer_meteo_data
+    )
+    
+    staging_agro_meteo = PythonOperator(
+        task_id='staging_agro_meteo',
+        python_callable=transfer_increment_process.transfer_agro_meteo_data
+    )
+    
+    
+    
     
     staging_agent_types >> staging_agents >> staging_agro_organizations >> \
-        staging_agrotehincal_operation_groups >> staging_agrotehincal_operations >> \
-             staging_crops >> staging_fields >> staging_measurement_units >> \
-                 staging_meteo_locations >> staging_production_types >> \
-                     staging_seasons >> staging_varieties >> staging_soil_data
+    staging_agrotehincal_operation_groups >> staging_agrotehincal_operations >> \
+    staging_crops >> staging_fields >> staging_measurement_units >> \
+    staging_meteo_locations >> staging_production_types >> \
+    staging_seasons >> staging_varieties >> staging_soil_data >> \
+    staging_field_tasks >> staging_meteo_data >> staging_agro_meteo
     
