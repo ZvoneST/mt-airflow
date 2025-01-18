@@ -2,7 +2,20 @@ from dataclasses import dataclass
 
 def transfer_raw_exploration_queries(user: str, password: str):
 
-    raw_landing_soil_query = f'''
+    raw_exploration_soil_query = f'''
+        INSERT INTO external_data.soil_data (
+            field_id,
+            soil_depth,
+            bdod,
+            clay,
+            silt,
+            sand,
+            nitrogen,
+            soc,
+            phh2o,
+            cec,
+            created_on
+        )
         SELECT
             x.field_id,
             x.soil_depth,
@@ -41,7 +54,7 @@ def transfer_raw_exploration_queries(user: str, password: str):
         x.soil_depth;
     '''
     
-    raw_landing_meteo_query = f'''
+    raw_exploration_meteo_query = f'''
         WITH max_date_cte AS (
             SELECT MAX(meteo_time)::DATE AS max_date
             FROM external_data.hourly_meteo_data
@@ -76,7 +89,7 @@ def transfer_raw_exploration_queries(user: str, password: str):
             );
     '''
     
-    raw_landing_agro_meteo_query = f'''
+    raw_exploration_agro_meteo_query = f'''
         WITH max_date_cte AS (
             SELECT MAX(meteo_time)::DATE AS max_date
             FROM external_data.hourly_agro_meteo_data
@@ -109,14 +122,14 @@ def transfer_raw_exploration_queries(user: str, password: str):
                 FROM external_data.hourly_agro_meteo_data);
     '''
     
-    # raw_landing_satellite_query = f'''
+    # raw_exploration_satellite_query = f'''
     
     # '''
     
     @dataclass
     class RawExplorationTransfer:
-        raw_landing_soil: str = raw_landing_soil_query
-        raw_landing_meteo: str = raw_landing_meteo_query
-        raw_landing_agro_meteo: str = raw_landing_agro_meteo_query
+        raw_exploration_soil: str = raw_exploration_soil_query
+        raw_exploration_meteo: str = raw_exploration_meteo_query
+        raw_exploration_agro_meteo: str = raw_exploration_agro_meteo_query
     
     return RawExplorationTransfer()
