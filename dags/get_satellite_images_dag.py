@@ -62,7 +62,7 @@ with DAG(
             "docker run --rm \
             --env-file /home/zvone/env_vars/.mt_sat_env \
             -v /home/zvone/mtsi/sentinel_images/landing/:/home/mtsi/sentinel_images/landing/ \
-            mt-satellite"
+            mt-satellite:ms"
         ),
     )
     
