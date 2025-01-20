@@ -123,6 +123,11 @@ with DAG(
         python_callable=transfer_increment_process.transfer_agro_meteo_data
     )
     
+    staging_vegetation_indices = PythonOperator(
+        task_id='staging_vegetation_indices',
+        python_callable=transfer_increment_process.transfer_vegetation_indices_data
+    )
+    
     
     
     
@@ -131,5 +136,6 @@ with DAG(
     staging_crops >> staging_fields >> staging_measurement_units >> \
     staging_meteo_locations >> staging_production_types >> \
     staging_seasons >> staging_varieties >> staging_soil_data >> \
-    staging_field_tasks >> staging_meteo_data >> staging_agro_meteo
+    staging_field_tasks >> staging_meteo_data >> staging_agro_meteo >> \
+    staging_vegetation_indices
     

@@ -42,6 +42,18 @@ def select_agro_meteo_data_query(filter_date: str):
             external_data.hourly_agro_meteo_data
         WHERE 
             created_on > '{filter_date}';'''
+            
+def select_vegetation_indices_data_query(filter_date: str): 
+    return f'''
+        SELECT 
+            vegetation_index_id, field_id, interval_from, interval_to, 
+            indices_ndvi_min, indices_ndvi_max, indices_ndvi_mean, indices_ndvi_stdev, 
+            indices_savi_min, indices_savi_max, indices_savi_mean, indices_savi_stdev, 
+            indices_bwdrvi_min, indices_bwdrvi_max, indices_bwdrvi_mean, indices_bwdrvi_stdev, 
+            sample_count, no_data_count, created_on
+        FROM external_data.vegetation_indices
+        WHERE created_on > '{filter_date}';
+    '''
 
 
 class CKHSTransferIncrementData:
@@ -68,8 +80,10 @@ class CKHSTransferIncrementData:
                 source_query = select_field_tasks_query(filter_date=latest_date)
             elif table == 'hourly_meteo_data':
                 source_query = select_meteo_data_query(filter_date=latest_date)
-            else:
+            elif table == 'hourly_agro_meteo_data':
                 source_query = select_agro_meteo_data_query(filter_date=latest_date)
+            else:
+                source_query = select_vegetation_indices_data_query(filter_date=latest_date)
                 
             with self.pg_conn.cursor() as cursor:
                 cursor.execute(source_query)
@@ -135,4 +149,10 @@ class CallableCKHSTransferIncrementData():
         self.transfer_data.transfer_increment_data(
             database=self.database,
             table='hourly_agro_meteo_data'
+        )
+        
+    def transfer_vegetation_indices_data(self):
+        self.transfer_data.transfer_increment_data(
+            database=self.database,
+            table='vegetation_indices'
         )
