@@ -32,9 +32,9 @@ ckhs_config = clickhouse_conn_config(user=target_conn.login,
                                      port=target_conn.port,
                                      database=target_conn.schema)
 
-transfer_all_process = CallableCKHSTransferAllData(pg_conn=pg_conn, ckhs_config=ckhs_config)
+transfer_all_process = CallableCKHSTransferAllData(pg_conn=pg_conn, ckhs_config=ckhs_config, database=target_conn.schema)
 
-transfer_increment_process = CallableCKHSTransferIncrementData(pg_conn=pg_conn, ckhs_config=ckhs_config)
+transfer_increment_process = CallableCKHSTransferIncrementData(pg_conn=pg_conn, ckhs_config=ckhs_config, database=target_conn.schema)
 
 with DAG(
     dag_id='transfer_exploration_staging',

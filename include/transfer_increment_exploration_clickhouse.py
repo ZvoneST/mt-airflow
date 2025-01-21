@@ -128,7 +128,7 @@ class CKHSTransferIncrementData:
 
 class CallableCKHSTransferIncrementData():
     
-    def __init__(self, pg_conn: str, ckhs_config: dict, database: str = 'staging'):
+    def __init__(self, pg_conn: str, ckhs_config: dict, database: str):
         self.transfer_data = CKHSTransferIncrementData(pg_conn=pg_conn, 
                                                        ckhs_config=ckhs_config)
         self.database = database
