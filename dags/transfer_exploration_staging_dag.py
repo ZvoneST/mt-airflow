@@ -40,7 +40,7 @@ with DAG(
     dag_id='transfer_exploration_staging',
     default_args=default_args,
     schedule='0 11 * * *',
-    catchup=True
+    catchup=False
 ) as dag:
     
     staging_agent_types = PythonOperator(
@@ -58,14 +58,14 @@ with DAG(
         python_callable=transfer_all_process.transfer_agro_organizations
     )
 
-    staging_agrotehincal_operation_groups = PythonOperator(
-        task_id='staging_agrotehincal_operation_groups',
-        python_callable=transfer_all_process.transfer_agrotehincal_operation_groups
+    staging_agrotechnical_operation_groups = PythonOperator(
+        task_id='staging_agrotechnical_operation_groups',
+        python_callable=transfer_all_process.transfer_agrotechnical_operation_groups
     )
 
-    staging_agrotehincal_operations = PythonOperator(
-        task_id='staging_agrotehincal_operations',
-        python_callable=transfer_all_process.transfer_agrotehincal_operations
+    staging_agrotechnical_operations = PythonOperator(
+        task_id='staging_agrotechnical_operations',
+        python_callable=transfer_all_process.transfer_agrotechnical_operations
     )
     
     staging_crops = PythonOperator(
@@ -132,7 +132,7 @@ with DAG(
     
     
     staging_agent_types >> staging_agents >> staging_agro_organizations >> \
-    staging_agrotehincal_operation_groups >> staging_agrotehincal_operations >> \
+    staging_agrotechnical_operation_groups >> staging_agrotechnical_operations >> \
     staging_crops >> staging_fields >> staging_measurement_units >> \
     staging_meteo_locations >> staging_production_types >> \
     staging_seasons >> staging_varieties >> staging_soil_data >> \

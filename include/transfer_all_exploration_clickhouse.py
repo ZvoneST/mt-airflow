@@ -37,8 +37,8 @@ class StagingTables:
     agent_types: str = 'agent_types'
     agents: str = 'agents'
     agro_organizations: str = 'agro_organizations'
-    agrotehincal_operation_groups: str = 'agrotehnical_operation_groups'
-    agrotehincal_operations: str = 'agrotehnical_operations'
+    agrotechnical_operation_groups: str = 'agrotechnical_operation_groups'
+    agrotechnical_operations: str = 'agrotechnical_operations'
     crops: str = 'crops'
     fields: str = 'fields'
     measurement_units: str = 'measurement_units'
@@ -54,8 +54,8 @@ class SelectAllQueries():
     agent_types: str = 'SELECT agent_type_id, agent_type_name FROM farm_management.agent_types;'
     agents: str = 'SELECT agent_id, agent_type_id, agent_name FROM farm_management.agents;'
     agro_organizations: str = 'SELECT agro_organization_id, agro_organization_name FROM farm_management.agro_organizations;'
-    agrotehincal_operation_groups: str = 'SELECT agrotehnical_operation_group_id, agrotehnical_operation_group_name FROM farm_management.agrotehnical_operation_groups;'
-    agrotehincal_operations: str = 'SELECT agrotehnical_operation_id, agrotehnical_operation_name, agrotehnical_operation_group_id FROM farm_management.agrotehnical_operations;'
+    agrotechnical_operation_groups: str = 'SELECT agrotechnical_operation_group_id, agrotechnical_operation_group_name FROM farm_management.agrotechnical_operation_groups;'
+    agrotechnical_operations: str = 'SELECT agrotechnical_operation_id, agrotechnical_operation_name, agrotechnical_operation_group_id FROM farm_management.agrotechnical_operations;'
     crops: str = 'SELECT crop_id, crop_name FROM farm_management.crops;'
     fields: str = 'SELECT field_id, agro_organization_id, field_name, area_ha, field_polygon_wkt, centroid_coordinates_wkt, meteo_location_id FROM farm_management.fields;'
     measurement_units: str = 'SELECT measurement_unit_id, measurement_unit_label FROM farm_management.measurement_units;'
@@ -146,18 +146,18 @@ class CallableCKHSTransferAllData():
             dest_table=self.stg_tables.agro_organizations
         )
         
-    def transfer_agrotehincal_operation_groups(self):
+    def transfer_agrotechnical_operation_groups(self):
         self.transfer_data.transfer_data(
-            data_query=self.queries.agrotehincal_operation_groups,
+            data_query=self.queries.agrotechnical_operation_groups,
             dest_database=self.database,
-            dest_table=self.stg_tables.agrotehincal_operation_groups
+            dest_table=self.stg_tables.agrotechnical_operation_groups
         )
         
-    def transfer_agrotehincal_operations(self):
+    def transfer_agrotechnical_operations(self):
         self.transfer_data.transfer_data(
-            data_query=self.queries.agrotehincal_operations,
+            data_query=self.queries.agrotechnical_operations,
             dest_database=self.database,
-            dest_table=self.stg_tables.agrotehincal_operations
+            dest_table=self.stg_tables.agrotechnical_operations
         )
     
     def transfer_crops(self):

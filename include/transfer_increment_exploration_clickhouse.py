@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def select_field_tasks_query(filter_date: str):
    return f'''
         SELECT 
-            field_task_id, agrotehnical_operation_id, agro_organization_id, field_id, crop_id, variety_id, production_type_id, 
+            field_task_id, agrotechnical_operation_id, agro_organization_id, field_id, crop_id, variety_id, production_type_id, 
             agent_id, season_id, due_date, measurement_unit_id, quantity_ha, total_quantity
         FROM 
             farm_management.field_tasks

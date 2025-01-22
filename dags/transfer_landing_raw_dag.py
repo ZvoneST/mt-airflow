@@ -21,7 +21,7 @@ with DAG(
     dag_id='transfer_landing_raw',
     default_args=default_args,
     schedule='0 8 * * *',
-    catchup=True
+    catchup=False
 ) as dag:
 
     transfer_soil_data = SQLExecuteQueryOperator(

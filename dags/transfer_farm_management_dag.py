@@ -23,7 +23,7 @@ with DAG(
     dag_id='transfer_farm_management',
     default_args=default_args,
     schedule='0 1 * * *',
-    catchup=True
+    catchup=False
 ) as dag:
 
     agent_types = SQLExecuteQueryOperator(
@@ -44,16 +44,16 @@ with DAG(
         sql=queries.agro_organizations
     )
     
-    agrotehnical_operation_groups = SQLExecuteQueryOperator(
-        task_id='agrotehnical_operation_groups',
+    agrotechnical_operation_groups = SQLExecuteQueryOperator(
+        task_id='agrotechnical_operation_groups',
         conn_id='exploration_zone_conn',
-        sql=queries.agrotehnical_operation_groups
+        sql=queries.agrotechnical_operation_groups
     )
     
-    agrotehnical_operations = SQLExecuteQueryOperator(
-        task_id='agrotehnical_operations',
+    agrotechnical_operations = SQLExecuteQueryOperator(
+        task_id='agrotechnical_operations',
         conn_id='exploration_zone_conn',
-        sql=queries.agrotehnical_operations
+        sql=queries.agrotechnical_operations
     )
     
     crops = SQLExecuteQueryOperator(
@@ -105,7 +105,7 @@ with DAG(
     )
     
     (agent_types >> agents >> agro_organizations >> \
-    agrotehnical_operation_groups >> agrotehnical_operations) >> \
+    agrotechnical_operation_groups >> agrotechnical_operations) >> \
     (crops >> varieties >> measurement_units >> meteo_locations >> \
     production_types >> seasons) >> fields >> field_tasks
     

@@ -53,7 +53,7 @@ with DAG(
     dag_id='get_satellite_images',
     default_args=default_args,
     schedule_interval=timedelta(days=6),
-    catchup=True
+    catchup=False
 ) as dag:
     
     get_images = BashOperator(

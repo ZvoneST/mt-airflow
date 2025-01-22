@@ -24,7 +24,7 @@ with DAG(
     dag_id='transfer_raw_exploration',
     default_args=default_args,
     schedule='0 9 * * *',
-    catchup=True
+    catchup=False
 ) as dag:
 
     transfer_raw_exploration_soil = SQLExecuteQueryOperator(

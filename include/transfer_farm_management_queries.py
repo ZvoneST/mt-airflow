@@ -44,31 +44,31 @@ def farm_management_transfers(user: str, password: str):
         );
     '''
 
-    fm_agrotehnical_operation_groups = f'''
-        INSERT INTO farm_management.agrotehnical_operation_groups (agrotehnical_operation_group_id, agrotehnical_operation_group_name)
-        SELECT agrotehnical_operation_group_id, agrotehnical_operation_group_name
+    fm_agrotechnical_operation_groups = f'''
+        INSERT INTO farm_management.agrotechnical_operation_groups (agrotechnical_operation_group_id, agrotechnical_operation_group_name)
+        SELECT agrotechnical_operation_group_id, agrotechnical_operation_group_name
         FROM dblink(
             'dbname=farm_management user={user} password={password} host=localhost',
-            'SELECT agrotehnical_operation_group_id, agrotehnical_operation_group_name FROM management.agrotehnical_operation_groups'
-        ) AS source_data(agrotehnical_operation_group_id SMALLINT, agrotehnical_operation_group_name VARCHAR(25))
+            'SELECT agrotechnical_operation_group_id, agrotechnical_operation_group_name FROM management.agrotechnical_operation_groups'
+        ) AS source_data(agrotechnical_operation_group_id SMALLINT, agrotechnical_operation_group_name VARCHAR(25))
         WHERE NOT EXISTS (
             SELECT 1 
-            FROM farm_management.agrotehnical_operation_groups dest
-            WHERE dest.agrotehnical_operation_group_id = source_data.agrotehnical_operation_group_id
+            FROM farm_management.agrotechnical_operation_groups dest
+            WHERE dest.agrotechnical_operation_group_id = source_data.agrotechnical_operation_group_id
         );
     '''
 
-    fm_agrotehnical_operations = f'''
-        INSERT INTO farm_management.agrotehnical_operations (agrotehnical_operation_id, agrotehnical_operation_name, agrotehnical_operation_group_id)
-        SELECT agrotehnical_operation_id, agrotehnical_operation_name, agrotehnical_operation_group_id
+    fm_agrotechnical_operations = f'''
+        INSERT INTO farm_management.agrotechnical_operations (agrotechnical_operation_id, agrotechnical_operation_name, agrotechnical_operation_group_id)
+        SELECT agrotechnical_operation_id, agrotechnical_operation_name, agrotechnical_operation_group_id
         FROM dblink(
             'dbname=farm_management user={user} password={password} host=localhost',
-            'SELECT agrotehnical_operation_id, agrotehnical_operation_name, agrotehnical_operation_group_id FROM management.agrotehnical_operations'
-        ) AS source_data(agrotehnical_operation_id INTEGER, agrotehnical_operation_name VARCHAR(50), agrotehnical_operation_group_id SMALLINT)
+            'SELECT agrotechnical_operation_id, agrotechnical_operation_name, agrotechnical_operation_group_id FROM management.agrotechnical_operations'
+        ) AS source_data(agrotechnical_operation_id INTEGER, agrotechnical_operation_name VARCHAR(50), agrotechnical_operation_group_id SMALLINT)
         WHERE NOT EXISTS (
             SELECT 1 
-            FROM farm_management.agrotehnical_operations dest
-            WHERE dest.agrotehnical_operation_id = source_data.agrotehnical_operation_id
+            FROM farm_management.agrotechnical_operations dest
+            WHERE dest.agrotechnical_operation_id = source_data.agrotechnical_operation_id
         );
     '''
 
@@ -212,7 +212,7 @@ def farm_management_transfers(user: str, password: str):
     fm_field_tasks = f'''
         INSERT INTO farm_management.field_tasks (
             field_task_id, 
-            agrotehnical_operation_id, 
+            agrotechnical_operation_id, 
             agro_organization_id, 
             field_id, 
             crop_id, 
@@ -228,7 +228,7 @@ def farm_management_transfers(user: str, password: str):
         )
         SELECT 
             field_task_id, 
-            agrotehnical_operation_id, 
+            agrotechnical_operation_id, 
             agro_organization_id, 
             field_id, 
             crop_id, 
@@ -245,7 +245,7 @@ def farm_management_transfers(user: str, password: str):
             'dbname=farm_management user={user} password={password} host=localhost',
             'SELECT 
                 field_task_id, 
-                agrotehnical_operation_id, 
+                agrotechnical_operation_id, 
                 agro_organization_id, 
                 field_id, 
                 crop_id, 
@@ -261,7 +261,7 @@ def farm_management_transfers(user: str, password: str):
             FROM management.field_tasks'
         ) AS source_data(
             field_task_id INTEGER, 
-            agrotehnical_operation_id SMALLINT, 
+            agrotechnical_operation_id SMALLINT, 
             agro_organization_id SMALLINT, 
             field_id SMALLINT, 
             crop_id SMALLINT, 
@@ -287,8 +287,8 @@ def farm_management_transfers(user: str, password: str):
         agent_types: str = fm_agent_types
         agents: str = fm_agents
         agro_organizations: str = fm_agro_organizations
-        agrotehnical_operation_groups: str = fm_agrotehnical_operation_groups
-        agrotehnical_operations: str = fm_agrotehnical_operations
+        agrotechnical_operation_groups: str = fm_agrotechnical_operation_groups
+        agrotechnical_operations: str = fm_agrotechnical_operations
         crops: str = fm_crops
         varieties: str = fm_varieties
         measurement_units:str = fm_measurement_units
