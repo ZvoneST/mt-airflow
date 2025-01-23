@@ -1,8 +1,3 @@
-from airflow.operators.python import PythonOperator
-import shutil
-import os
-import logging
-
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.hooks.base import BaseHook
@@ -60,8 +55,8 @@ with DAG(
         task_id='get_images',
         bash_command=(
             "docker run --rm \
-            --env-file /home/zvone/env_vars/.mt_sat_env \
-            -v /home/zvone/mtsi/sentinel_images/landing/:/home/mtsi/sentinel_images/landing/ \
+            --env-file ~/env_vars/.mt_sat_env \
+            -v ~/mtsi/sentinel_images/landing/:/home/mtsi/sentinel_images/landing/ \
             mt-satellite:ms"
         ),
     )
@@ -74,7 +69,7 @@ with DAG(
     
     transfer_landing_images = BashOperator(
         task_id='transfer_landing_images',
-        bash_command=("cp -R /home/zvone/mtsi/sentinel_images/landing/* /home/zvone/mtsi/sentinel_images/raw_zone/")
+        bash_command=("cp -R ~/mtsi/sentinel_images/landing/* ~/mtsi/sentinel_images/raw_zone/")
     )
     
     transfer_satellite_meta_exploration = SQLExecuteQueryOperator(
@@ -85,7 +80,7 @@ with DAG(
     
     remove_landing_images = BashOperator(
         task_id='remove_landing_images',
-        bash_command=("rm -rf /home/zvone/mtsi/sentinel_images/landing/*")
+        bash_command=("rm -rf ~/mtsi/sentinel_images/landing/*")
     )
         
     remove_landing_metadata = SQLExecuteQueryOperator(
