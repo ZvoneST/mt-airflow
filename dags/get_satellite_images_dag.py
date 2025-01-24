@@ -67,7 +67,7 @@ raw_to_exploration = f'''
 with DAG(
     dag_id='get_satellite_images',
     default_args=default_args,
-    schedule_interval=timedelta(days=6, minutes=30),
+    schedule_interval=timedelta(days=6, hours=2, minutes=30),
     catchup=False,
     dagrun_timeout=timedelta(minutes=20),
 ) as dag:

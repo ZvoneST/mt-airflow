@@ -10,7 +10,7 @@ default_args = {
 with DAG(
     dag_id='run_dbt_model_dag',
     default_args=default_args,
-    schedule_interval=None,
+    schedule_interval='0 2 * * *',
     catchup=False,
 ) as dag:
     
