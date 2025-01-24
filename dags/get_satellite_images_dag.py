@@ -1,12 +1,32 @@
-from airflow import DAG
-from airflow.operators.bash import BashOperator
-from airflow.hooks.base import BaseHook
-from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
+import sys
+import os
+import psycopg2
 from datetime import datetime, timedelta
 
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
+from airflow.hooks.base import BaseHook
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from include.vegetation_index_processor import VegetationIndexProcessor
+
 source_conn = BaseHook.get_connection('raw_zone_conn')
+dest_conn = BaseHook.get_connection('exploration_zone_conn')
 user = source_conn.login
 uspass = source_conn.password
+
+exploration_conn = psycopg2.connect(
+        dbname=dest_conn.schema,
+        user=dest_conn.login,
+        password=dest_conn.password,
+        host=dest_conn.host,
+        port=dest_conn.port
+)
+
+processor = VegetationIndexProcessor(db_connection=exploration_conn)
+
 
 default_args = {
     'owner': 'admin',
@@ -47,8 +67,9 @@ raw_to_exploration = f'''
 with DAG(
     dag_id='get_satellite_images',
     default_args=default_args,
-    schedule_interval=timedelta(days=6),
-    catchup=False
+    schedule_interval=timedelta(days=6, minutes=30),
+    catchup=False,
+    dagrun_timeout=timedelta(minutes=20),
 ) as dag:
     
     get_images = BashOperator(
@@ -58,7 +79,7 @@ with DAG(
             --env-file ~/env_vars/.mt_sat_env \
             -v ~/mtsi/sentinel_images/landing/:/home/mtsi/sentinel_images/landing/ \
             mt-satellite:ms"
-        ),
+        )
     )
     
     transfer_satellite_meta_data_raw = SQLExecuteQueryOperator(
@@ -89,5 +110,11 @@ with DAG(
         sql='TRUNCATE TABLE landing.satellite_metadata;'
     )
     
+    extract_vegetation_indices = PythonOperator(
+        task_id='extract_vegetation_indices',
+        python_callable=processor.process
+    )
+    
     get_images >> transfer_satellite_meta_data_raw >> transfer_landing_images \
-    >> transfer_satellite_meta_exploration >> remove_landing_images >> remove_landing_metadata
+    >> transfer_satellite_meta_exploration >> remove_landing_images >> \
+    remove_landing_metadata >> extract_vegetation_indices
