@@ -1,5 +1,13 @@
+import logging
 import requests
 from datetime import datetime, timedelta
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+logger = logging.getLogger(__name__)
 
 
 def soilgrids_request(lon, lat):
@@ -15,6 +23,7 @@ def soilgrids_request(lon, lat):
     }
     response = requests.get(url, params=parameters)
     response.raise_for_status()
+    logger.info(f'SoilGrids request status code: {response.status_code}')
     return response.json()
 
 
@@ -38,10 +47,11 @@ def meteo_data_request(lon, lat, key, days=1):
         
         response = requests.get(url, params=parameters, headers=headers)
         response.raise_for_status()
+        logger.info(f'Wheather API request status code: {response.status_code}')
         return response.json()
 
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
+        logger.error(f"Request failed: {e}")
         raise
 
  
@@ -65,8 +75,9 @@ def agro_meteo_data_request(lon, lat, key, days=1):
         
         response = requests.get(url, params=parameters, headers=headers)
         response.raise_for_status()
+        logger.info(f'Agro API request status code: {response.status_code}')
         return response.json()
 
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
+        logger.error(f"Request failed: {e}")
         raise
